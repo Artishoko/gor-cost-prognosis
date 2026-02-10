@@ -33,7 +33,7 @@ const buttons = {
 // Настройки приложения
 const CONFIG = {
     CARDS_BASE_URL: "https://raw.githubusercontent.com/Artishoko/gor-cost-prognosis/main/Cards/",
-    TOTAL_CARDS: 139, // Убедитесь, что это число соответствует вашим файлам!
+    TOTAL_CARDS: 133, // Убедитесь, что это число соответствует вашим файлам!
     INVOICE_URL: "https://t.me/Magic_G_bot?start=invoice_123", // Ваша ссылка на инвойс
     PAYMENT_AMOUNT: 10 // Сумма в звёздах
 };
@@ -216,7 +216,7 @@ function displayCards(cardNumbers) {
         
         // ФОРМИРУЕМ ПРАВИЛЬНЫЙ ПУТЬ К КАРТИНКЕ
         // Убедитесь, что имена файлов соответствуют!
-        const cardUrl = `${CONFIG.CARDS_BASE_URL}card_(${cardNumber}).jpg`;
+        const cardUrl = `${CONFIG.CARDS_BASE_URL}card_${cardNumber}.jpg`;
         
         const img = cardElement.querySelector('img');
         img.src = cardUrl;
