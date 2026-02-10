@@ -1,19 +1,18 @@
 // Telegram WebApp API
 const tg = window.Telegram.WebApp;
-tg.expand(); // Раскрываем на весь экран
+tg.expand();
 tg.ready();
 
-// ========== НОВАЯ СТРУКТУРА ДАННЫХ ==========
+// ========== СОСТОЯНИЕ ПРИЛОЖЕНИЯ ==========
 let appState = {
-    isPaidUser: false,           // Статус оплаченного доступа
-    freePredictionsLeft: 5,      // Осталось бесплатных прогнозов (5 для новых пользователей)
+    isPaidUser: false,
+    freePredictionsLeft: 5, // 5 бесплатных прогнозов
     currentCards: [],
-    lastPaymentTime: null,
-    totalPredictionsMade: 0      // Всего сделано прогнозов (для статистики)
+    lastPaymentTime: null
 };
 
-// Ключ для хранения в localStorage (новая версия)
-const STORAGE_KEY = 'gor_cost_app_state_v3';
+// Ключ для хранения
+const STORAGE_KEY = 'gor_cost_state';
 
 // DOM элементы
 const screens = {
@@ -30,87 +29,73 @@ const buttons = {
     new: document.getElementById('btn-new')
 };
 
-// Настройки приложения
+const paymentNote = document.getElementById('payment-note');
+
+// НАСТРОЙКИ (ПРОВЕРЬТЕ ЭТИ ССЫЛКИ!)
 const CONFIG = {
+    // Важно: путь должен соответствовать именам файлов!
     CARDS_BASE_URL: "https://raw.githubusercontent.com/Artishoko/gor-cost-prognosis/main/Cards/",
-    TOTAL_CARDS: 133, // Убедитесь, что это число соответствует вашим файлам!
-    INVOICE_URL: "https://t.me/Magic_G_bot?start=invoice_123", // Ваша ссылка на инвойс
-    PAYMENT_AMOUNT: 10 // Сумма в звёздах
+    TOTAL_CARDS: 139, // У вас 108 карт
+    INVOICE_URL: "https://t.me/Magic_G_bot?start=invoice_123", // Ваша ссылка
+    PAYMENT_AMOUNT: 10
 };
 
 // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
 
-// Сохранить состояние в localStorage
+// Сохранить состояние
 function saveAppState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
 }
 
-// Загрузить состояние из localStorage
+// Загрузить состояние
 function loadAppState() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
         try {
-            const parsed = JSON.parse(saved);
-            // Объединяем с дефолтными значениями на случай изменения структуры
-            appState = { ...appState, ...parsed };
+            appState = JSON.parse(saved);
         } catch (e) {
-            console.error('Ошибка загрузки состояния:', e);
+            console.error('Ошибка загрузки:', e);
         }
     }
 }
 
 // Инициализация приложения
 function initApp() {
-    // 1. Загружаем сохранённое состояние
     loadAppState();
     
-    // 2. Проверяем оплаченный доступ (действителен 24 часа)
+    // Проверяем оплаченный доступ (24 часа)
     if (appState.lastPaymentTime && 
         (Date.now() - appState.lastPaymentTime) < 24 * 60 * 60 * 1000) {
         appState.isPaidUser = true;
     }
     
-    // 3. Сохраняем состояние (если новый пользователь - сохраняем 5 прогнозов)
-    saveAppState();
-    
-    // 4. Обновляем интерфейс
     updatePaymentButton();
     setupEventListeners();
     
-    // 5. Логи для отладки
-    console.log(`📊 Статус: ${appState.freePredictionsLeft} бесплатных прогнозов осталось, оплата: ${appState.isPaidUser ? 'ДА' : 'НЕТ'}`);
+    console.log('Приложение инициализировано. Бесплатных прогнозов:', appState.freePredictionsLeft);
 }
 
-// Обновить кнопки в зависимости от состояния
+// Обновить кнопки и текст
 function updatePaymentButton() {
-    // Есть ли доступ к новому прогнозу?
     const hasAccess = appState.isPaidUser || appState.freePredictionsLeft > 0;
-    
     buttons.getPrognosis.disabled = !hasAccess;
     
     // Текст на кнопке доната
     if (appState.isPaidUser) {
-        buttons.donate.innerHTML = '<span class="star">✅</span> Оплачено (доступ открыт)';
+        buttons.donate.innerHTML = '<span class="star">✅</span> Оплачено';
         buttons.donate.style.opacity = '0.7';
         buttons.donate.style.cursor = 'default';
-    } else if (appState.freePredictionsLeft > 0) {
-        buttons.donate.innerHTML = `<span class="star">⭐</span> Донат ${CONFIG.PAYMENT_AMOUNT} звёзд`;
-        buttons.donate.style.opacity = '1';
-        buttons.donate.style.cursor = 'pointer';
-        
-        // Добавляем счётчик бесплатных прогнозов
-        const note = document.querySelector('.payment-note');
-        if (note) {
-            note.textContent = `Бесплатных прогнозов осталось: ${appState.freePredictionsLeft}`;
-        }
+        paymentNote.textContent = 'Оплаченный доступ активен';
     } else {
         buttons.donate.innerHTML = `<span class="star">⭐</span> Донат ${CONFIG.PAYMENT_AMOUNT} звёзд`;
         buttons.donate.style.opacity = '1';
         buttons.donate.style.cursor = 'pointer';
         
-        const note = document.querySelector('.payment-note');
-        if (note) {
-            note.textContent = 'Бесплатные прогнозы закончились. Оплатите для продолжения.';
+        // Текст о бесплатных прогнозах
+        if (appState.freePredictionsLeft > 0) {
+            paymentNote.textContent = `Бесплатных прогнозов осталось: ${appState.freePredictionsLeft}`;
+        } else {
+            paymentNote.textContent = 'Бесплатные прогнозы закончились. Оплатите для продолжения.';
         }
     }
 }
@@ -125,7 +110,6 @@ function setupEventListeners() {
     });
     buttons.share.addEventListener('click', sharePrognosis);
     buttons.new.addEventListener('click', () => {
-        // Проверяем доступ перед генерацией нового прогноза
         const hasAccess = appState.isPaidUser || appState.freePredictionsLeft > 0;
         if (hasAccess && appState.currentCards.length > 0) {
             generatePrognosis();
@@ -151,7 +135,6 @@ function processPayment() {
     
     tg.openInvoice(CONFIG.INVOICE_URL, (status) => {
         if (status === 'paid') {
-            // Успешная оплата
             appState.isPaidUser = true;
             appState.lastPaymentTime = Date.now();
             saveAppState();
@@ -163,50 +146,42 @@ function processPayment() {
         } else if (status === 'failed') {
             alert('Оплата не удалась. Попробуйте еще раз.');
         } else if (status === 'cancelled') {
-            console.log('Пользователь отменил оплату');
+            console.log('Оплата отменена');
         }
     });
 }
 
-// Генерация прогноза (ОСНОВНАЯ ЛОГИКА)
+// Генерация прогноза
 function generatePrognosis() {
-    // 1. ПРОВЕРКА ДОСТУПА
+    // 1. Проверка доступа
     if (!appState.isPaidUser && appState.freePredictionsLeft <= 0) {
         alert('Бесплатные прогнозы закончились! Оплатите для продолжения.');
         showScreen('payment');
         return;
     }
     
-    // 2. СПИСАНИЕ БЕСПЛАТНОЙ ПОПЫТКИ (если не оплачено)
+    // 2. Списание бесплатной попытки
     if (!appState.isPaidUser && appState.freePredictionsLeft > 0) {
         appState.freePredictionsLeft--;
-        console.log(`🎁 Использован бесплатный прогноз. Осталось: ${appState.freePredictionsLeft}`);
+        console.log(`Использован бесплатный прогноз. Осталось: ${appState.freePredictionsLeft}`);
+        saveAppState();
+        updatePaymentButton(); // Обновляем счётчик
     }
     
-    // 3. ГЕНЕРАЦИЯ КАРТ
+    // 3. Генерация 6 уникальных карт
     const cards = [];
     while (cards.length < 6) {
         const randomCard = Math.floor(Math.random() * CONFIG.TOTAL_CARDS) + 1;
         if (!cards.includes(randomCard)) cards.push(randomCard);
     }
     
-    // 4. ОБНОВЛЕНИЕ СТАТИСТИКИ
+    // 4. Сохранение и отображение
     appState.currentCards = cards;
-    appState.totalPredictionsMade++;
     saveAppState();
-    
-    // 5. ОТОБРАЖЕНИЕ И ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
     displayCards(cards);
-    updatePaymentButton(); // Обновляем счётчик на кнопках
-    
-    // Показываем информацию о статусе
-    const statusInfo = appState.isPaidUser 
-        ? '✅ Оплаченный доступ' 
-        : `🎁 Бесплатных прогнозов осталось: ${appState.freePredictionsLeft}`;
-    console.log(statusInfo);
 }
 
-// Отображение карт
+// Отображение карт (ВАЖНО: путь к картинкам)
 function displayCards(cardNumbers) {
     const positions = ['success', 'risk', 'mood', 'morning', 'day', 'evening'];
     
@@ -214,9 +189,8 @@ function displayCards(cardNumbers) {
         const cardElement = document.getElementById(`card-${position}`);
         const cardNumber = cardNumbers[index];
         
-        // ФОРМИРУЕМ ПРАВИЛЬНЫЙ ПУТЬ К КАРТИНКЕ
-        // Убедитесь, что имена файлов соответствуют!
-        const cardUrl = `${CONFIG.CARDS_BASE_URL}card_${cardNumber}.jpg`;
+        // КРИТИЧЕСКИ ВАЖНО: путь должен соответствовать именам файлов
+        const cardUrl = `${CONFIG.CARDS_BASE_URL}card_(${cardNumber}).jpg`;
         
         const img = cardElement.querySelector('img');
         img.src = cardUrl;
@@ -230,45 +204,29 @@ function displayCards(cardNumbers) {
 
 // Поделиться прогнозом
 function sharePrognosis() {
+    const shareText = `🔮 Я получил прогноз от "Горностая"! У меня осталось ${appState.freePredictionsLeft} бесплатных прогнозов.`;
+    
     if (tg.shareUrl) {
-        const shareText = `🔮 Я только что получил прогноз от "Горностая"! У меня осталось ${appState.freePredictionsLeft} бесплатных прогнозов. Попробуй и ты!`;
         tg.shareUrl(
             `https://t.me/share/url?url=${encodeURIComponent('https://t.me/your_bot')}&text=${encodeURIComponent(shareText)}`,
             'Мой прогноз на день!'
         );
     } else {
-        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('Я получил прогноз на день!')}`;
+        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(shareText)}`;
         window.open(shareUrl, '_blank');
     }
 }
 
-// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+// ========== ЗАПУСК ==========
+document.addEventListener('DOMContentLoaded', initApp);
 
-// Проверка загрузки карт
-function testCardsLoad() {
-    console.log("🔄 Проверяем загрузку карт...");
-    // Проверяем только первые 3 карты для примера
+// Проверка загрузки карт (для отладки)
+setTimeout(() => {
+    console.log('Проверяем загрузку карт...');
     for(let i = 1; i <= 3; i++) {
         const img = new Image();
         img.src = `${CONFIG.CARDS_BASE_URL}card_(${i}).jpg`;
         img.onload = () => console.log(`✅ Карта ${i} загружена`);
-        img.onerror = () => console.error(`❌ Ошибка загрузки карты ${i}. Проверьте путь: ${img.src}`);
+        img.onerror = () => console.error(`❌ Ошибка загрузки карты ${i}`);
     }
-}
-
-// Сбросить состояние (для тестирования)
-function resetAppState() {
-    if (confirm('Сбросить все данные? Это удалит статистику.')) {
-        localStorage.removeItem(STORAGE_KEY);
-        location.reload();
-    }
-}
-
-// ========== ЗАПУСК ПРИЛОЖЕНИЯ ==========
-document.addEventListener('DOMContentLoaded', initApp);
-setTimeout(testCardsLoad, 1000);
-
-// Добавляем кнопку сброса в консоль для тестирования (только в development)
-if (window.location.href.includes('github.io')) {
-    console.log('🔧 Для тестирования используйте resetAppState() в консоли');
-            }
+}, 1000);
