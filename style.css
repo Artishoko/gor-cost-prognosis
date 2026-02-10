@@ -111,7 +111,7 @@ h1 {
     display: block;
 }
 
-/* --- ДВА РЯДА ГОРИЗОНТАЛЬНЫХ КАРТ (С ПОЛНЫМ ОТОБРАЖЕНИЕМ) --- */
+/* --- ДВА РЯДА ГОРИЗОНТАЛЬНЫХ КАРТ (НИЖНИЕ БЛОКИ) --- */
 .field-container {
     display: block !important;
     width: 100% !important;
@@ -126,7 +126,7 @@ h1 {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
-    margin-bottom: 40px !important;
+    margin-bottom: 35px !important; /* Уменьшил расстояние между рядами */
     width: 100% !important;
 }
 
@@ -147,16 +147,16 @@ h1 {
 .slot-label {
     font-size: 14px !important;
     color: #f5e9d4 !important;
-    margin-bottom: 15px !important;
+    margin-bottom: 12px !important; /* Уменьшил отступ */
     text-transform: uppercase !important;
     text-align: center !important;
     width: 100% !important;
 }
 
-/* Контейнер для карты */
+/* Контейнер для карты - УМЕНЬШЕННАЯ ВЫСОТА */
 .card-show {
     width: 100% !important;
-    height: 170px !important;
+    height: 140px !important; /* УМЕНЬШИЛ: было 170px */
     border: 3px solid #d4af37 !important;
     border-radius: 12px !important;
     overflow: hidden !important;
@@ -164,20 +164,20 @@ h1 {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: contain вместо cover - показывает всю картинку */
+/* Картинка - показывает всю без обрезки */
 .card-show img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important; /* Вся картинка видна без обрезки */
+    object-fit: contain !important;
     object-position: center !important;
     display: block !important;
-    background-color: #2d2d2d; /* Фон на случай пустого пространства */
+    background-color: #2d2d2d;
 }
 
-/* Заполнитель на экране оплаты */
+/* Заполнитель на экране оплаты - ТАКАЯ ЖЕ ВЫСОТА */
 .slot-placeholder {
     width: 100%;
-    height: 170px;
+    height: 140px; /* УМЕНЬШИЛ: было 170px */
     background: rgba(212, 175, 55, 0.1);
     border: 2px dashed #d4af37;
     border-radius: 12px;
@@ -214,10 +214,10 @@ h1 {
 /* --- АДАПТИВНОСТЬ --- */
 @media (max-width: 768px) {
     .card-show {
-        height: 140px !important;
+        height: 120px !important; /* УМЕНЬШИЛ: было 140px */
     }
     .slot-placeholder {
-        height: 140px;
+        height: 120px; /* УМЕНЬШИЛ: было 140px */
     }
 }
 
@@ -228,10 +228,10 @@ h1 {
     }
     
     .card-show {
-        height: 120px !important;
+        height: 100px !important; /* УМЕНЬШИЛ: было 120px */
     }
     .slot-placeholder {
-        height: 120px;
+        height: 100px; /* УМЕНЬШИЛ: было 120px */
     }
     .slot-label {
         font-size: 12px !important;
