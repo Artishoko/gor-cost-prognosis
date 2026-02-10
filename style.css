@@ -194,80 +194,110 @@ h1 {
         padding: 14px 20px;
         font-size: 16px;
     }
-
-    /* ДИАГОНАЛЬНОЕ РАСПОЛОЖЕНИЕ КАРТ (ЁЛОЧКА) */
+/* ГОРИЗОНТАЛЬНОЕ РАСПОЛОЖЕНИЕ КАРТ (КРУПНЫЕ) */
 .field-container {
-    display: block;
-    position: relative;
-    width: 100%;
-    margin: 40px 0;
-    padding: 20px 10px;
-    min-height: 500px;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin: 40px auto !important;
+    padding: 20px !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    overflow-x: auto !important; /* Прокрутка, если карты не помещаются */
+    overflow-y: hidden !important;
 }
 
 /* Отключаем старые стили рядов */
 .field-container .row {
-    display: block !important;
-    margin: 0 !important;
+    display: contents !important; /* Игнорируем структуру рядов */
+}
+
+/* Каждая ячейка карты */
+.card-slot {
+    flex: 0 0 auto !important;
+    width: 180px !important; /* Увеличили ширину */
+    min-width: 150px !important;
+    max-width: 200px !important;
+    height: 270px !important; /* Увеличили высоту */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 10px !important;
+}
+
+/* Метка карты */
+.slot-label {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: #f5e9d4 !important;
+    margin-bottom: 15px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    text-align: center !important;
     width: 100% !important;
 }
 
-/* Каждая ячейка позиционируется абсолютно */
-.card-slot {
-    position: absolute !important;
-    width: 30% !important;
-    min-width: 100px !important;
-    transition: all 0.5s ease !important;
+/* Контейнер для самой картинки */
+.card-show {
+    width: 100% !important;
+    height: 100% !important;
+    border: 3px solid #d4af37 !important;
+    border-radius: 15px !important;
+    overflow: hidden !important;
+    background: #2d2d2d !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6) !important;
+    transition: all 0.3s ease !important;
 }
 
-/* ВЕРХНИЙ РЯД (Успех, Риск, Настрой) */
-#card-success {
-    top: 10% !important;
-    left: 5% !important;
-    transform: rotate(-8deg) !important;
-    z-index: 3;
+/* Картинка внутри */
+.card-show img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Заполняет весь контейнер */
+    object-position: center !important;
+    display: block !important;
 }
 
-#card-risk {
-    top: 5% !important;
-    left: 35% !important;
-    transform: rotate(-2deg) !important;
-    z-index: 4;
-}
-
-#card-mood {
-    top: 12% !important;
-    left: 65% !important;
-    transform: rotate(6deg) !important;
-    z-index: 3;
-}
-
-/* НИЖНИЙ РЯД (Утро, День, Вечер) */
-#card-morning {
-    top: 55% !important;
-    left: 8% !important;
-    transform: rotate(-5deg) !important;
-    z-index: 2;
-}
-
-#card-day {
-    top: 50% !important;
-    left: 38% !important;
-    transform: rotate(2deg) !important;
-    z-index: 3;
-}
-
-#card-evening {
-    top: 57% !important;
-    left: 68% !important;
-    transform: rotate(10deg) !important;
-    z-index: 2;
-}
-
-/* Подсветка при наведении */
-.card-slot:hover {
-    z-index: 100 !important;
+/* Эффект при наведении */
+.card-show:hover {
     transform: scale(1.05) !important;
-    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4) !important;
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5) !important;
+    border-color: #ffd700 !important;
 }
+
+/* Анимация появления */
+.card-show.revealed {
+    animation: cardReveal 0.5s ease-out !important;
+}
+
+@keyframes cardReveal {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 900px) {
+    .card-slot {
+        width: 150px !important;
+        height: 225px !important;
+        min-width: 120px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .card-slot {
+        width: 130px !important;
+        height: 195px !important;
+        min-width: 110px !important;
+    }
+    
+    .field-container {
+        gap: 10px !important;
+        padding: 15px 10px !important;
+    }
+
+    }
 
