@@ -3,6 +3,10 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 tg.ready();
 
+// ========== РЕЖИМ ОТЛАДКИ ==========
+// Поставьте false для реальной работы
+const DEBUG_MODE = true;
+
 // ========== СОСТОЯНИЕ ПРИЛОЖЕНИЯ ==========
 let appState = {
     isPaidUser: false,
@@ -31,12 +35,11 @@ const buttons = {
 
 const paymentNote = document.getElementById('payment-note');
 
-// НАСТРОЙКИ (ПРОВЕРЬТЕ ЭТИ ССЫЛКИ!)
+// НАСТРОЙКИ
 const CONFIG = {
-    // Важно: путь должен соответствовать именам файлов!
+    // ВАЖНО: путь должен соответствовать именам ваших файлов!
     CARDS_BASE_URL: "https://raw.githubusercontent.com/Artishoko/gor-cost-prognosis/main/Cards/",
-    TOTAL_CARDS: 139, // У вас 108 карт
-    INVOICE_URL: "https://t.me/Magic_G_bot?start=invoice_123", // Ваша ссылка
+    TOTAL_CARDS: 108, // Укажите реальное количество карт
     PAYMENT_AMOUNT: 10
 };
 
@@ -85,16 +88,16 @@ function updatePaymentButton() {
         buttons.donate.innerHTML = '<span class="star">✅</span> Оплачено';
         buttons.donate.style.opacity = '0.7';
         buttons.donate.style.cursor = 'default';
-        paymentNote.textContent = 'Оплаченный доступ активен';
+        if (paymentNote) paymentNote.textContent = 'Оплаченный доступ активен';
     } else {
         buttons.donate.innerHTML = `<span class="star">⭐</span> Донат ${CONFIG.PAYMENT_AMOUNT} звёзд`;
         buttons.donate.style.opacity = '1';
         buttons.donate.style.cursor = 'pointer';
         
         // Текст о бесплатных прогнозах
-        if (appState.freePredictionsLeft > 0) {
+        if (appState.freePredictionsLeft > 0 && paymentNote) {
             paymentNote.textContent = `Бесплатных прогнозов осталось: ${appState.freePredictionsLeft}`;
-        } else {
+        } else if (paymentNote) {
             paymentNote.textContent = 'Бесплатные прогнозы закончились. Оплатите для продолжения.';
         }
     }
@@ -126,43 +129,31 @@ function showScreen(screenName) {
     if (screenName === 'payment') updatePaymentButton();
 }
 
-// Обработка платежа
+// Обработка платежа (Telegram Stars)
 function processPayment() {
+    // РЕЖИМ ОТЛАДКИ
+    if (DEBUG_MODE) {
+        appState.isPaidUser = true;
+        appState.lastPaymentTime = Date.now();
+        saveAppState();
+        updatePaymentButton();
+        alert('РЕЖИМ ОТЛАДКИ: доступ активирован без оплаты');
+        return;
+    }
+    
     if (appState.isPaidUser) {
         alert('У вас уже есть оплаченный доступ!');
         return;
     }
     
-    // Показываем кнопку оплаты через Telegram Stars
-    const starsAmount = 10; // Количество звёзд
+    // ВАЖНО: замените "Magic_G_bot" на username вашего реального бота!
+    const botUsername = "Magic_G_bot"; // ← ИЗМЕНИТЕ ЭТО
     
-    // Вариант 1: Открываем стандартное окно для перевода Stars
-    // Telegram сам покажет интерфейс оплаты
-    tg.openLink(`https://t.me/${tg.initDataUnsafe.user?.username || 'Magic_G_bot'}?start=stars${starsAmount}`);
+    // Открываем ссылку для перевода Stars
+    const starsUrl = `https://t.me/${botUsername}?start=stars${CONFIG.PAYMENT_AMOUNT}`;
+    tg.openLink(starsUrl);
     
-    // Вариант 2: Используем WebApp метод (если доступен)
-    if (tg.openInvoice) {
-        // Создаем простой инвойс для Stars
-        const invoiceUrl = `https://t.me/${tg.initDataUnsafe.user?.username || 'Magic_G_bot'}?start=stars${starsAmount}`;
-        tg.openInvoice(invoiceUrl, (status) => {
-            if (status === 'paid') {
-                // Оплата прошла
-                appState.isPaidUser = true;
-                appState.lastPaymentTime = Date.now();
-                saveAppState();
-                updatePaymentButton();
-                
-                if (tg.showAlert) {
-                    tg.showAlert('✅ Оплата прошла успешно! Теперь у вас неограниченный доступ.');
-                }
-            }
-        });
-    }
-    
-    console.log(`Запрошена оплата ${starsAmount} звёзд`);
-}
-        }
-    });
+    console.log('Открыт донат по ссылке:', starsUrl);
 }
 
 // Генерация прогноза
@@ -179,7 +170,7 @@ function generatePrognosis() {
         appState.freePredictionsLeft--;
         console.log(`Использован бесплатный прогноз. Осталось: ${appState.freePredictionsLeft}`);
         saveAppState();
-        updatePaymentButton(); // Обновляем счётчик
+        updatePaymentButton();
     }
     
     // 3. Генерация 6 уникальных карт
