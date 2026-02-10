@@ -168,7 +168,7 @@ function displayCards(cardNumbers) {
         const cardElement = document.getElementById(`card-${position}`);
         const cardNumber = cardNumbers[index];
         // Формируем правильный URL карты
-        const cardUrl = `${CONFIG.CARDS_BASE_URL}card${cardNumber}.jpg`;
+        const cardUrl = `${CONFIG.CARDS_BASE_URL}card_(${cardNumber}).jpg`;
         
         const img = cardElement.querySelector('img');
         img.src = cardUrl;
