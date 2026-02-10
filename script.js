@@ -234,3 +234,25 @@ function debugGenerateFree() {
 
 // Для тестирования можно раскомментировать:
 // debugGenerateFree();
+
+// Функция для проверки загрузки карт
+function testCardsLoad() {
+    console.log("🔄 Тестируем загрузку карт...");
+    
+    // Проверяем первые 5 карт
+    for(let i = 1; i <= 5; i++) {
+        const img = new Image();
+        img.src = `${CONFIG.CARDS_BASE_URL}card${i}.jpg`;
+        
+        img.onload = function() {
+            console.log(`✅ Карта ${i} загружена успешно: ${img.src}`);
+        };
+        
+        img.onerror = function() {
+            console.error(`❌ Ошибка загрузки карты ${i}: ${img.src}`);
+        };
+    }
+}
+
+// Вызвать после загрузки страницы
+setTimeout(testCardsLoad, 1000);
