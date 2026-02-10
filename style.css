@@ -28,7 +28,7 @@ body {
 /* --- ЭКРАН ПРИВЕТСТВИЯ --- */
 .logo-container {
     text-align: center;
-    margin-bottom: 30px; /* Уменьшил отступ */
+    margin-bottom: 30px;
 }
 
 .logo {
@@ -46,13 +46,13 @@ h1 {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     color: #b8a98a;
-    margin-bottom: 15px; /* Уменьшил отступ */
+    margin-bottom: 15px;
 }
 
 .footer-text {
     font-size: 14px;
     color: #8a7a5a;
-    margin-top: 25px; /* Уменьшил отступ */
+    margin-top: 25px;
     text-align: center;
 }
 
@@ -111,12 +111,12 @@ h1 {
     display: block;
 }
 
-/* --- ДВА РЯДА ГОРИЗОНТАЛЬНЫХ КАРТ (ЕЩЁ НИЖЕ) --- */
+/* --- ДВА РЯДА ГОРИЗОНТАЛЬНЫХ КАРТ (КОМПАКТНЫЕ) --- */
 .field-container {
     display: block !important;
     width: 100% !important;
-    margin: 25px auto !important; /* Уменьшил внешний отступ */
-    padding: 20px 15px !important; /* Уменьшил внутренний отступ */
+    margin: 25px auto !important;
+    padding: 20px 15px !important;
     background: rgba(26, 26, 26, 0.9) !important;
     border: 2px solid #d4af37 !important;
     border-radius: 20px !important;
@@ -126,7 +126,7 @@ h1 {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
-    margin-bottom: 30px !important; /* Уменьшил расстояние между рядами */
+    margin-bottom: 30px !important;
     width: 100% !important;
 }
 
@@ -145,23 +145,23 @@ h1 {
 
 /* Метка карты */
 .slot-label {
-    font-size: 13px !important; /* Уменьшил размер шрифта */
+    font-size: 13px !important;
     color: #f5e9d4 !important;
-    margin-bottom: 10px !important; /* Уменьшил отступ */
+    margin-bottom: 10px !important;
     text-transform: uppercase !important;
     text-align: center !important;
     width: 100% !important;
 }
 
-/* Контейнер для карты - ЗНАЧИТЕЛЬНО УМЕНЬШЕННАЯ ВЫСОТА */
+/* Контейнер для карты - КОМПАКТНЫЙ */
 .card-show {
     width: 100% !important;
-    height: 110px !important; /* УМЕНЬШИЛ: было 140px, стало 110px */
+    height: 110px !important;
     border: 3px solid #d4af37 !important;
-    border-radius: 10px !important; /* Уменьшил радиус */
+    border-radius: 10px !important;
     overflow: hidden !important;
     background: #2d2d2d !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important; /* Уменьшил тень */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Картинка - показывает всю без обрезки */
@@ -174,13 +174,13 @@ h1 {
     background-color: #2d2d2d;
 }
 
-/* Заполнитель на экране оплаты - ТАКАЯ ЖЕ ВЫСОТА */
+/* Заполнитель на экране оплаты */
 .slot-placeholder {
     width: 100%;
-    height: 110px; /* УМЕНЬШИЛ: было 140px, стало 110px */
+    height: 110px;
     background: rgba(212, 175, 55, 0.1);
     border: 2px dashed #d4af37;
-    border-radius: 10px; /* Уменьшил радиус */
+    border-radius: 10px;
 }
 
 /* --- ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ --- */
@@ -188,7 +188,7 @@ h1 {
 .action-buttons {
     width: 100%;
     max-width: 300px;
-    margin: 15px auto; /* Уменьшил отступ */
+    margin: 15px auto;
     text-align: center;
 }
 
@@ -201,12 +201,12 @@ h1 {
 }
 
 .interpretation {
-    margin-top: 25px; /* Уменьшил отступ */
-    padding: 12px; /* Уменьшил внутренний отступ */
+    margin-top: 25px;
+    padding: 12px;
     background: rgba(212, 175, 55, 0.1);
-    border-radius: 10px; /* Уменьшил радиус */
+    border-radius: 10px;
     border-left: 3px solid #d4af37;
-    font-size: 13px; /* Уменьшил размер шрифта */
+    font-size: 13px;
     max-width: 600px;
     text-align: center;
 }
@@ -214,10 +214,10 @@ h1 {
 /* --- АДАПТИВНОСТЬ --- */
 @media (max-width: 768px) {
     .card-show {
-        height: 90px !important; /* УМЕНЬШИЛ: было 120px, стало 90px */
+        height: 90px !important;
     }
     .slot-placeholder {
-        height: 90px; /* УМЕНЬШИЛ: было 120px, стало 90px */
+        height: 90px;
     }
 }
 
@@ -228,13 +228,13 @@ h1 {
     }
     
     .card-show {
-        height: 80px !important; /* УМЕНЬШИЛ: было 100px, стало 80px */
+        height: 80px !important;
     }
     .slot-placeholder {
-        height: 80px; /* УМЕНЬШИЛ: было 100px, стало 80px */
+        height: 80px;
     }
     .slot-label {
-        font-size: 11px !important; /* Уменьшил ещё */
+        font-size: 11px !important;
         margin-bottom: 8px !important;
     }
     .btn-main, .btn-donate, .btn-share {
