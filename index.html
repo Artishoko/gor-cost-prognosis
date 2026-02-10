@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Прогноз от Горностая</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+    /* Экстренный фикс вёрстки */
+    body { font-family: sans-serif; padding: 20px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .field-container { margin: 20px 0; }
+    .row { display: flex; justify-content: space-around; margin-bottom: 20px; }
+    .card-slot { width: 30%; border: 1px dashed #ccc; padding: 10px; text-align: center; }
+    .btn-main { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #d4af37; color: black; border: none; border-radius: 10px; font-weight: bold; }
+</style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400&display=swap">
