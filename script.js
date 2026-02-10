@@ -35,38 +35,6 @@ const CONFIG = {
     PAYMENT_AMOUNT: 10 // Звёзд
 };
 
-// Инициализация
-function initApp() {
-    
-    // === КОД ДЛЯ ПРОВЕРКИ "ПЕРВЫХ 100" ЧЕРЕЗ LOCALSTORAGE ===
-    const freeAccessKey = 'hasFreeAccess'; // Ключ для хранения метки у пользователя
-    const freeAccessGivenKey = 'freeAccessCounter'; // Ключ для нашего "счётчика"
-    
-    // 1. Пытаемся получить наш "счётчик" из localStorage
-    let freeAccessCounter = parseInt(localStorage.getItem(freeAccessGivenKey)) || 0;
-    
-    // 2. Проверяем, получал ли уже ЭТОТ пользователь бесплатный доступ
-    const userAlreadyGotFreeAccess = localStorage.getItem(freeAccessKey);
-    
-    // 3. Если пользователь еще не получал доступ И счётчик меньше 100
-    if (!userAlreadyGotFreeAccess && freeAccessCounter < 100) {
-        // Даём ему бесплатный доступ
-        appState.paid = true;
-        // Помечаем, чтобы больше не давать
-        localStorage.setItem(freeAccessKey, 'true');
-        // Увеличиваем наш "счётчик" на 1
-        freeAccessCounter++;
-        localStorage.setItem(freeAccessGivenKey, freeAccessCounter.toString());
-        
-        console.log(`Бесплатный доступ выдан. Всего получило: ${freeAccessCounter}/100 пользователей.`);
-    }
-    // === КОНЕЦ ДОБАВЛЕННОГО КОДА ===
-    
-    // ... остальная существующая логика функции initApp() ...
-    // Проверяем, был ли уже оплачен прогноз
-    const savedState = localStorage.getItem('gor_cost_app_state');
-    // ... и так далее ...
-}
     // Проверяем, был ли уже оплачен прогноз
     const savedState = localStorage.getItem('gor_cost_app_state');
     if (savedState) {
